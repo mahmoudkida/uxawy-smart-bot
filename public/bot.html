@@ -39,7 +39,7 @@
         console.log('Confidence: ' + e.results[0][0].confidence);
 
         // We will use the Socket.IO here later…
-        document.querySelector('.what').innerText = enteredText;
+        document.querySelector('.what').value = enteredText;
         document.querySelector('.what').disabled = true;
         document.querySelector('.ask-bot').click();
     });
@@ -52,7 +52,7 @@
     });
     socket.on('bot reply', function(replyText) {
         document.querySelector('.bot-response').innerText = replyText;
-        document.querySelector('.what').innerText = "";
+        document.querySelector('.what').value = "";
         document.querySelector('.what').disabled = false;
         if (sayResponse)
             synthVoice(replyText);
