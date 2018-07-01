@@ -1,0 +1,68 @@
+<div class="sm-col-6">
+    <textarea class="what"></textarea>
+    <button class="record">
+                            Record Voice
+                        </button>
+    <button class="ask-bot">
+                            Ask UXAWY
+                        </button>
+</div>
+<div class="sm-col-6">
+    <p class="bot-response">
+
+    </p>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
+
+<script>
+    const socket = io('//localhost:4200/');
+    var sayResponse = true;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    var enteredText = "";
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    document.querySelector('.record').addEventListener('mousedown', () => {
+        recognition.start();
+    });
+    document.querySelector('.record').addEventListener('mouseup', () => {
+        recognition.stop();
+    });
+    document.querySelector('.what').addEventListener('keyup', () => {
+        enteredText = document.querySelector('.what').value;
+    });
+    recognition.addEventListener('result', (e) => {
+        let last = e.results.length - 1;
+        enteredText = e.results[last][0].transcript;
+
+        console.log('Confidence: ' + e.results[0][0].confidence);
+
+        // We will use the Socket.IO here later…
+        document.querySelector('.what').innerText = enteredText;
+        document.querySelector('.what').disabled = true;
+        document.querySelector('.ask-bot').click();
+    });
+    document.querySelector('.ask-bot').addEventListener('click', () => {
+        if (enteredText.length > 0) {
+            socket.emit('chat message', enteredText);
+        } else {
+            alert("Press the recording button or enter text to chat with UXAWY");
+        }
+    });
+    socket.on('bot reply', function(replyText) {
+        document.querySelector('.bot-response').innerText = replyText;
+        document.querySelector('.what').innerText = "";
+        document.querySelector('.what').disabled = false;
+        if (sayResponse)
+            synthVoice(replyText);
+    });
+
+
+    function synthVoice(text) {
+        const synth = window.speechSynthesis;
+        const utterance = new SpeechSynthesisUtterance();
+        utterance.text = text;
+        synth.speak(utterance);
+    }
+
+</script>
