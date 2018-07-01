@@ -12,7 +12,11 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 var server  = require('http').createServer(app);
-
+app.all('/', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+ });
 var io = require('socket.io')(server);
 
 io.on('connection', function(socket) {
