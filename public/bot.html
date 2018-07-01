@@ -52,7 +52,6 @@
     });
     socket.on('bot reply', function(replyText) {
         document.querySelector('.bot-response').innerText = replyText;
-        document.querySelector('.what').value = "";
         document.querySelector('.what').disabled = false;
         if (sayResponse)
             synthVoice(replyText);
@@ -64,6 +63,11 @@
         const utterance = new SpeechSynthesisUtterance();
         utterance.text = text;
         synth.speak(utterance);
+        setTimeout(function(){
+            document.querySelector('.what').value = "";
+        },1000);
+
+
     }
 
 </script>
