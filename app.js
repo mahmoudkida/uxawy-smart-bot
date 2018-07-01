@@ -3,6 +3,32 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const apiai = require('apiai')('bccb47faa1144397aad612f4acf8f88e');
+var io = require('socket.io')(server);
+
+io.on('connection', function(socket) {
+  socket.on('chat message', (text) => {
+
+    // Get a reply from API.AI
+
+    let apiaiReq = apiai.textRequest(text, {
+      sessionId: Math.random() * 1000 + new Date().toString()
+    });
+
+    apiaiReq.on('response', (response) => {
+      let aiText = response.result.fulfillment.speech;
+      socket.emit('bot reply', aiText); // Send the result back to the browser!
+    });
+
+    apiaiReq.on('error', (error) => {
+      console.log(error);
+    });
+
+    apiaiReq.end();
+
+  });
+});
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
