@@ -23,16 +23,15 @@ app.use(function (req, res, next) {
 });
 
 var io = require('socket.io')(server, {
-    origins: '*:*'
-    // 'transports': ['websocket', 'htmlfile', 'xhr-polling', 'jsonp-polling']
+    origins: '*:*',
+    transports: ['xhr-polling'],
+    port: 4200,
+    "polling duration": 10
 });
 
 server.listen(4200);
 
-io.configure(function () {
-    io.set("transports", ["xhr-polling"]);
-    io.set("polling duration", 10);
-});
+
 
 io.on('connection', function (socket) {
     socket.on('chat message', (text) => {
