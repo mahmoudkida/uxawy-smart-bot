@@ -4,6 +4,15 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const apiai = require('apiai')('bccb47faa1144397aad612f4acf8f88e');
+
+
+
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
+
+var app = express();
+var server  = require('http').createServer(app);
+
 var io = require('socket.io')(server);
 
 io.on('connection', function(socket) {
@@ -28,13 +37,6 @@ io.on('connection', function(socket) {
 
   });
 });
-
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
-var app = express();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
