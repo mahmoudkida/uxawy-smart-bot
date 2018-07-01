@@ -12,24 +12,35 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 var server  = require('http').createServer(app);
-app.all('/', function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next();
- });
-var io = require('socket.io')(server);
+
+app.use(function(req, res, next) {
+        res.header("Access-Control-Allow-Origin", "http://uxawy.com");
+		res.header("Access-Control-Allow-Credentials", "true");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        res.header("Access-Control-Allow-Headers", "Content-Type");
+        res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+        next();
+    });
+
+var io = require('socket.io')(server,{
+        origins: '*:*'
+        // 'transports': ['websocket', 'htmlfile', 'xhr-polling', 'jsonp-polling']
+    });
+server.listen(8080);
 
 io.on('connection', function(socket) {
   socket.on('chat message', (text) => {
 
     // Get a reply from API.AI
+	console.log("client text: " + text);
 
     let apiaiReq = apiai.textRequest(text, {
-      sessionId: Math.random() * 1000 + new Date().toString()
+      sessionId: Math.random() * 1000
     });
 
     apiaiReq.on('response', (response) => {
       let aiText = response.result.fulfillment.speech;
+	  console.log("bot text: " + aiText);
       socket.emit('bot reply', aiText); // Send the result back to the browser!
     });
 
