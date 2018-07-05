@@ -32,7 +32,7 @@ var io = require('socket.io')(server, {
 server.listen(4200);
 
 io.on('reconnect_attempt', (socket) => {
-  socket.io.opts.transports = ['polling', 'websocket'];
+  socket.io.opts.transports = ['websocket'];
 });
 
 io.on('connection', function (socket) {
