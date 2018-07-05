@@ -24,14 +24,16 @@ app.use(function (req, res, next) {
 
 var io = require('socket.io')(server, {
     origins: '*:*',
-    transports: ['xhr-polling'],
+    transports: ['websocket', 'polling'],
     port: 4200,
     "polling duration": 10
 });
 
 server.listen(4200);
 
-
+io.on('reconnect_attempt', (socket) => {
+  socket.io.opts.transports = ['polling', 'websocket'];
+});
 
 io.on('connection', function (socket) {
     socket.on('chat message', (text) => {
