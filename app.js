@@ -12,7 +12,7 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 var server = require('http').createServer(app);
-
+app.use(express.static('node_modules'));
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Credentials", "true");
@@ -24,15 +24,15 @@ app.use(function (req, res, next) {
 
 var io = require('socket.io')(server, {
     origins: '*:*',
-    transports: ['websocket', 'polling'],
-    port: 4200,
+    transports: ['websocket','xhr-polling'],
+    port: 4567,
     "polling duration": 10
 });
 
 server.listen(4200);
 
 io.on('reconnect_attempt', (socket) => {
-  socket.io.opts.transports = ['websocket'];
+  socket.io.opts.transports = ['websocket','xhr-polling'];
 });
 
 io.on('connection', function (socket) {

@@ -16,7 +16,8 @@
 
 <script>
     //const socket = io('wss://localhost:4200/');
-    const socket = io('wss://uxawy-ai.herokuapp.com:4200/');
+    const socket = io('wss://uxawy-ai.herokuapp.com:4567/',{'transports': ['websocket']});
+	//const socket = io('http://uxawy-ai.us.openode.io:4567/',{'transports': ['websocket']});
     var sayResponse = true;
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
